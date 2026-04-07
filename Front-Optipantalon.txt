@@ -1,0 +1,582 @@
+Directory structure:
+└── didiercit0-front-optipantalon/
+    ├── README.md
+    ├── eslint.config.js
+    ├── index.html
+    ├── package.json
+    ├── tailwind.config.js
+    ├── vite.config.js
+    └── src/
+        ├── App.css
+        ├── App.jsx
+        ├── index.css
+        ├── main.jsx
+        ├── components/
+        │   ├── atoms/
+        │   │   ├── Button.jsx
+        │   │   └── SectionTitle.jsx
+        │   ├── molecules/
+        │   │   ├── FormRow.jsx
+        │   │   └── TabMenu.jsx
+        │   └── organisms/
+        │       ├── ConfigSidebar.jsx
+        │       └── FitnessChart.jsx
+        └── page/
+            └── Dashboard.jsx
+================================================
+FILE: README.md
+================================================
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+
+================================================
+FILE: eslint.config.js
+================================================
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+
+
+================================================
+FILE: index.html
+================================================
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>front</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+
+
+================================================
+FILE: package.json
+================================================
+{
+  "name": "front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.1"
+  }
+}
+
+
+
+================================================
+FILE: tailwind.config.js
+================================================
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+
+================================================
+FILE: vite.config.js
+================================================
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite' 
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+})
+
+
+================================================
+FILE: src/App.css
+================================================
+@import "tailwindcss";
+
+
+================================================
+FILE: src/App.jsx
+================================================
+import Dashboard from './page/Dashboard'
+import './App.css'
+function App() {
+  return (
+    <div className="min-h-screen bg-slate-100 font-sans text-slate-800">
+      <Dashboard />
+    </div>
+  )
+}
+
+export default App
+
+
+================================================
+FILE: src/index.css
+================================================
+@import "tailwindcss";
+
+
+================================================
+FILE: src/main.jsx
+================================================
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+
+================================================
+FILE: src/components/atoms/Button.jsx
+================================================
+export function Button({ children, onClick, variant = 'primary', disabled = false }) {
+  const baseStyle = "w-full py-2 px-4 rounded font-bold transition-colors shadow-sm flex items-center justify-center gap-2";
+  const variants = {
+    primary: "bg-red-600 hover:bg-red-700 text-white disabled:bg-red-300",
+    secondary: "bg-slate-700 hover:bg-slate-800 text-white",
+  };
+
+  return (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      className={`${baseStyle} ${variants[variant]}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+
+================================================
+FILE: src/components/atoms/SectionTitle.jsx
+================================================
+export function SectionTitle({ text }) {
+  return (
+    <div className="mb-3 mt-5">
+      <div className="h-px bg-blue-100 w-full mb-2"></div>
+      <h3 className="text-sm font-bold text-blue-700 uppercase tracking-wider">{text}</h3>
+    </div>
+  );
+}
+
+
+================================================
+FILE: src/components/molecules/FormRow.jsx
+================================================
+export function FormRow({ label, value, min, max, step, onChange }) {
+  return (
+    <div className="flex justify-between items-center mb-2">
+      <label className="text-sm text-slate-600">{label}</label>
+      <input 
+        type="number" 
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-20 p-1 text-right text-sm font-bold text-blue-700 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
+    </div>
+  );
+}
+
+
+================================================
+FILE: src/components/molecules/TabMenu.jsx
+================================================
+export function TabMenu({ activeTab, onSelectTab, labels = [" Solución 1", "Solución 2", "Solución 3"] }) {
+  return (
+    <div className="flex gap-2 border-b border-slate-200 pb-2 mb-4">
+      {labels.map((label, idx) => (
+        <button
+          key={idx}
+          onClick={() => onSelectTab(idx)}
+          className={`px-4 py-2 text-sm font-bold rounded-t-md transition-colors ${
+            activeTab === idx 
+              ? 'bg-blue-50 border-b-2 border-blue-600 text-blue-800' 
+              : 'bg-white text-slate-400 hover:bg-slate-50'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+
+================================================
+FILE: src/components/organisms/ConfigSidebar.jsx
+================================================
+import { useState } from 'react';
+import { SectionTitle } from '../atoms/SectionTitle';
+import { Button } from '../atoms/Button';
+import { FormRow } from '../molecules/FormRow';
+
+export function ConfigSidebar({ config, onConfigChange, onRun }) {
+  const [permitirRotacion, setPermitirRotacion] = useState(true);
+  const [piezasActivas, setPiezasActivas] = useState({
+    'Pierna Delantera': true,
+    'Pierna Trasera': true,
+    'Pretina': true,
+    'Bolsillos': true
+  });
+
+  const togglePieza = (nombre) => {
+    setPiezasActivas(prev => ({...prev, [nombre]: !prev[nombre]}));
+  };
+
+  return (
+    <aside className="w-72 bg-white border-r border-slate-200 p-4 flex flex-col h-full overflow-y-auto shadow-sm shrink-0">
+      <h2 className="text-xl font-black text-blue-800 mb-2">OptiPantalon</h2>
+      
+      <SectionTitle text="Dimensiones Tela" />
+      <FormRow label="Ancho (cm):" value={config.ancho} min={50} max={400} step={10} 
+        onChange={(v) => onConfigChange({...config, ancho: v})} />
+      <FormRow label="Largo (cm):" value={config.largo} min={100} max={600} step={10} 
+        onChange={(v) => onConfigChange({...config, largo: v})} />
+
+      <SectionTitle text="Catalogo de Piezas" />
+      <div className="flex flex-col gap-1.5 mb-2">
+        {Object.entries(piezasActivas).map(([nombre, activa]) => (
+          <label key={nombre} className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:text-blue-600">
+            <input 
+              type="checkbox" 
+              checked={activa}
+              onChange={() => togglePieza(nombre)}
+              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            {nombre}
+          </label>
+        ))}
+      </div>
+
+      <SectionTitle text="Reglas de Acomodo" />
+      <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+        <input 
+          type="checkbox" 
+          checked={permitirRotacion}
+          onChange={(e) => setPermitirRotacion(e.target.checked)}
+          className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+        />
+        Permitir rotacion de 90 grados
+      </label>
+
+      <SectionTitle text="Parametros AG" />
+      <FormRow label="Poblacion:" value={config.poblacion} min={20} max={500} step={10} 
+        onChange={(v) => onConfigChange({...config, poblacion: v})} />
+      <FormRow label="Generaciones:" value={config.generaciones} min={50} max={2000} step={50} 
+        onChange={(v) => onConfigChange({...config, generaciones: v})} />
+      <FormRow label="Tasa de cruza:" value={config.tasaCruza} min={0.1} max={1.0} step={0.05} 
+        onChange={(v) => onConfigChange({...config, tasaCruza: v})} />
+      <FormRow label="Tasa mutacion:" value={config.tasaMutacion} min={0.01} max={0.5} step={0.05} 
+        onChange={(v) => onConfigChange({...config, tasaMutacion: v})} />
+
+      <div className="mt-8 gap-3 flex flex-col">
+        <Button onClick={onRun} variant="primary">EJECUTAR AG</Button>
+        <Button variant="secondary">Exportar CSV</Button>
+      </div>
+    </aside>
+  );
+}
+
+
+================================================
+FILE: src/components/organisms/FitnessChart.jsx
+================================================
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+
+export function FitnessChart({ data }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 flex flex-col w-full">
+      <h3 className="font-bold text-slate-700 mb-4 uppercase tracking-wider text-sm">
+        Evolucion Fitness
+      </h3>
+      <div className="w-full h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis 
+              dataKey="generacion" 
+              stroke="#94a3b8" 
+              fontSize={12} 
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis 
+              stroke="#94a3b8" 
+              fontSize={12} 
+              domain={['auto', 'auto']}
+              tickLine={false}
+              axisLine={false}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                borderRadius: '8px', 
+                border: 'none', 
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
+              }}
+              labelStyle={{ color: '#64748b', marginBottom: '4px' }}
+              itemStyle={{ fontWeight: 'bold' }}
+            />
+            <Legend 
+              iconType="circle" 
+              wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} 
+            />
+            <Line 
+              name="Mejor"
+              type="monotone" 
+              dataKey="mejor" 
+              stroke="#16a34a" 
+              strokeWidth={2} 
+              dot={false} 
+              activeDot={{ r: 5 }} 
+            />
+            <Line 
+              name="Promedio"
+              type="monotone" 
+              dataKey="promedio" 
+              stroke="#2563eb" 
+              strokeWidth={2} 
+              dot={false} 
+              activeDot={{ r: 5 }} 
+            />
+            <Line 
+              name="Peor"
+              type="monotone" 
+              dataKey="peor" 
+              stroke="#dc2626" 
+              strokeWidth={2} 
+              dot={false} 
+              activeDot={{ r: 5 }} 
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+
+================================================
+FILE: src/page/Dashboard.jsx
+================================================
+import { useState } from 'react';
+import { ConfigSidebar } from '../components/organisms/ConfigSidebar';
+import { FitnessChart } from '../components/organisms/FitnessChart';
+
+export default function Dashboard() {
+  const [config, setConfig] = useState({
+    ancho: 150,
+    largo: 200,
+    poblacion: 80,
+    generaciones: 200,
+    tasaCruza: 0.8,
+    tasaMutacion: 0.15
+  });
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const mockHistorial = Array.from({ length: 50 }, (_, i) => {
+    const decaimiento = Math.max(0.5, 1.5 - Math.log(i + 1) * 0.15);
+    return {
+      generacion: i + 1,
+      mejor: Number((decaimiento - 0.1).toFixed(4)),
+      promedio: Number((decaimiento + 0.2).toFixed(4)),
+      peor: Number((decaimiento + 0.6 + (Math.random() * 0.2)).toFixed(4))
+    };
+  });
+
+  const handleRunAlgorithm = () => {
+  };
+
+  return (
+    <div className="flex h-screen w-full bg-slate-100 font-sans overflow-hidden">
+      
+      <ConfigSidebar 
+        config={config} 
+        onConfigChange={setConfig} 
+        onRun={handleRunAlgorithm} 
+      />
+
+      <main className="flex-1 flex flex-col overflow-y-auto relative">
+        
+        <div className="bg-white border-b border-slate-200 p-4 sticky top-0 z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center shadow-sm gap-4">
+          <div className="flex gap-2">
+            {["Solucion 1", "Solucion 2", "Solucion 3"].map((label, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveTab(idx)}
+                className={`px-4 py-2 text-sm font-bold rounded-md transition-colors ${
+                  activeTab === idx 
+                    ? 'bg-blue-50 text-blue-800 ring-1 ring-blue-200' 
+                    : 'bg-white text-slate-500 hover:bg-slate-50'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-4 text-xs xl:text-sm font-mono bg-slate-50 p-2.5 rounded-md border border-slate-200 overflow-x-auto max-w-full">
+            <span className="text-slate-600 whitespace-nowrap">
+              Fitness: <strong className="text-slate-800">0.8432</strong>
+            </span>
+            <span className="text-slate-600 whitespace-nowrap">
+              Desperdicio (V1): <strong className="text-red-500">14.6%</strong>
+            </span>
+            <span className="text-slate-600 whitespace-nowrap">
+              Fragmentacion (V2): <strong className="text-amber-600">0.24</strong>
+            </span>
+            <span className="text-slate-600 whitespace-nowrap">
+              Perimetro (V3): <strong className="text-blue-600">850 cm</strong>
+            </span>
+          </div>
+        </div>
+
+        <div className="p-6 flex flex-col gap-6">
+          
+          <div className="bg-white border border-slate-200 rounded-lg shadow-sm w-full h-[500px] flex items-center justify-center shrink-0">
+             <span className="text-slate-400">Esperando ejecucion del algoritmo...</span>
+          </div>
+
+          <div className="flex flex-col gap-6 w-full">
+            
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 flex flex-col w-full h-[350px]">
+              <h3 className="font-bold text-slate-700 mb-4 uppercase tracking-wider text-sm">Tabla de Posiciones</h3>
+              <div className="overflow-y-auto flex-1 border border-slate-100 rounded-md">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-slate-600 sticky top-0 shadow-sm">
+                    <tr>
+                      <th className="p-3 border-b border-slate-200 font-semibold">Pieza</th>
+                      <th className="p-3 border-b border-slate-200 font-semibold">X</th>
+                      <th className="p-3 border-b border-slate-200 font-semibold">Y</th>
+                      <th className="p-3 border-b border-slate-200 font-semibold">Ancho</th>
+                      <th className="p-3 border-b border-slate-200 font-semibold">Alto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                      <td className="p-3 text-slate-700 font-medium">Pierna_Delantera_Izq</td>
+                      <td className="p-3 font-mono text-slate-500">10.0</td>
+                      <td className="p-3 font-mono text-slate-500">20.0</td>
+                      <td className="p-3 font-mono text-slate-500">30.0</td>
+                      <td className="p-3 font-mono text-slate-500">60.0</td>
+                    </tr>
+                    <tr className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                      <td className="p-3 text-slate-700 font-medium">Pierna_Delantera_Der</td>
+                      <td className="p-3 font-mono text-slate-500">45.0</td>
+                      <td className="p-3 font-mono text-slate-500">20.0</td>
+                      <td className="p-3 font-mono text-slate-500">30.0</td>
+                      <td className="p-3 font-mono text-slate-500">60.0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <FitnessChart data={mockHistorial} />
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  );
+}
