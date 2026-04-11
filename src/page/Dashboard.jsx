@@ -10,13 +10,13 @@ const COLORES = [
 
 export default function Dashboard() {
   const [config, setConfig] = useState({
-    ancho:        150,
-    largoMaximo:  300,
-    rotacion:     true,
-    poblacion:    50,
-    generaciones: 100,
-    tasaCruza:    0.8,
-    tasaMutacion: 0.15,
+    ancho:           150,
+    largoMaximo:     300,
+    poblacion:       50,
+    generaciones:    100,
+    tasaCruza:       0.70, 
+    tasaMutacionInd: 0.30, 
+    tasaMutacionGen: 0.25, 
   });
 
   const [activeTab,  setActiveTab]  = useState(0);
@@ -78,13 +78,11 @@ export default function Dashboard() {
       <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className="w-full h-full"
            style={{ fontFamily: "monospace" }}>
 
-        {/* Fondo del rollo */}
         <rect x={PADDING} y={PADDING}
               width={rollo_ancho * escalaX}
               height={largo_dibujo * escalaY}
               fill="#EFF6FF" stroke="#93C5FD" strokeWidth={1.5} />
 
-        {/* Línea punteada de largo usado */}
         <line
           x1={PADDING} y1={PADDING + largo_usado * escalaY}
           x2={PADDING + rollo_ancho * escalaX} y2={PADDING + largo_usado * escalaY}
@@ -98,7 +96,6 @@ export default function Dashboard() {
           {largo_usado.toFixed(1)} cm
         </text>
 
-        {/* Cuadrícula */}
         {Array.from({ length: Math.floor(rollo_ancho / 10) }, (_, i) => (
           <line key={`vg${i}`}
             x1={PADDING + (i+1)*10*escalaX} y1={PADDING}
@@ -112,7 +109,6 @@ export default function Dashboard() {
             stroke="#BFDBFE" strokeWidth={0.5} />
         ))}
 
-        {/* Piezas */}
         {solucionActiva.colocaciones.map((pl, i) => {
           const rx = PADDING + pl.x * escalaX;
           const ry = PADDING + pl.y * escalaY;
@@ -137,7 +133,6 @@ export default function Dashboard() {
           );
         })}
 
-        {/* Etiquetas ejes */}
         <text x={PADDING + (rollo_ancho*escalaX)/2} y={SVG_H-4}
               textAnchor="middle" fontSize={10} fill="#64748B">
           Ancho (cm)
@@ -151,7 +146,6 @@ export default function Dashboard() {
     );
   };
 
-  // ── Métricas ─────────────────────────────────────────────────
   const renderMetricas = () => {
     if (!solucionActiva) {
       return (
@@ -165,14 +159,10 @@ export default function Dashboard() {
     }
 
     const m = solucionActiva.metricas;
-
-    // v2_fragmentacion: 0 = espacio vacío concentrado (bueno), 1 = muy fragmentado (malo)
     const v2 = m.v2_fragmentacion ?? 0;
     const v2Color = v2 < 0.15 ? "text-green-600" : v2 < 0.35 ? "text-amber-600" : "text-red-500";
     const v2Label = v2 < 0.15 ? "concentrado" : v2 < 0.35 ? "moderado" : "fragmentado";
 
-    // v3_compacidad: 0 = piezas bien empaquetadas (bueno), 1 = muy dispersas (malo)
-    // En el backend ahora se llama v3_compacidad (antes v3_perimetro_norm)
     const v3 = m.v3_compacidad ?? m.v3_perimetro_norm ?? 0;
     const v3Color = v3 < 0.15 ? "text-green-600" : v3 < 0.30 ? "text-amber-600" : "text-red-500";
     const v3Label = v3 < 0.15 ? "compacto" : v3 < 0.30 ? "moderado" : "disperso";
@@ -184,7 +174,7 @@ export default function Dashboard() {
         </span>
 
         <span className="text-slate-600 whitespace-nowrap">
-          Largo usado (V1):{" "}
+          Largo usado:{" "}
           <strong className="text-red-500">
             {m.v1_largo_usado_cm.toFixed(1)} cm
           </strong>
@@ -193,14 +183,12 @@ export default function Dashboard() {
           </span>
         </span>
 
-        {/* V2: Fragmentación — verde si está bien concentrado */}
         <span className="text-slate-600 whitespace-nowrap">
-          Fragmentacion (V2):{" "}
+          Fragmentacion:{" "}
           <strong className={v2Color}>{v2.toFixed(3)}</strong>
           <span className="text-slate-400 text-xs ml-1">({v2Label})</span>
         </span>
 
-        {/* V3: Compacidad — antes mostraba perímetro normalizado siempre en 1.0 */}
         <span className="text-slate-600 whitespace-nowrap">
           Compacidad (V3):{" "}
           <strong className={v3Color}>{v3.toFixed(3)}</strong>
@@ -210,7 +198,6 @@ export default function Dashboard() {
     );
   };
 
-  // ── Tabla ─────────────────────────────────────────────────────
   const renderTabla = () => {
     if (!solucionActiva) {
       return (
@@ -233,7 +220,6 @@ export default function Dashboard() {
     ));
   };
 
-  // ── JSX principal ─────────────────────────────────────────────
   return (
     <div className="flex h-screen w-full bg-slate-100 font-sans overflow-hidden">
 
@@ -246,7 +232,6 @@ export default function Dashboard() {
 
       <main className="flex-1 flex flex-col overflow-y-auto relative">
 
-        {/* Barra superior */}
         <div className="bg-white border-b border-slate-200 p-4 sticky top-0 z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center shadow-sm gap-4">
           <div className="flex gap-2">
             {["Solución 1", "Solución 2", "Solución 3"].map((label, idx) => (
@@ -266,14 +251,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Error fatal */}
         {error && (
           <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
             ⚠ {error}
           </div>
         )}
 
-        {/* Advertencias */}
         {resultado?.advertencias?.length > 0 && (
           <div className="mx-6 mt-4 flex flex-col gap-2">
             {resultado.advertencias.map((msg, i) => (
@@ -286,14 +269,11 @@ export default function Dashboard() {
 
         <div className="p-6 flex flex-col gap-6">
 
-          {/* Canvas */}
           <div className="bg-white border border-slate-200 rounded-lg shadow-sm w-full h-[500px] flex items-center justify-center shrink-0 overflow-hidden">
             {renderCanvas()}
           </div>
 
           <div className="flex flex-col gap-6 w-full">
-
-            {/* Tabla */}
             <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 flex flex-col w-full h-[350px]">
               <h3 className="font-bold text-slate-700 mb-4 uppercase tracking-wider text-sm">
                 Tabla de Posiciones

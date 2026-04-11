@@ -29,9 +29,9 @@ const TooltipPersonalizado = ({ active, payload, label }) => {
       <p style={{ color: "#64748b", marginBottom: "4px", fontWeight: 600 }}>
         Gen {label}
       </p>
-      {peor && (
-        <p style={{ color: peor.color, fontWeight: "bold" }}>
-          Peor : {peor.value.toFixed(6)}
+      {mejor && (
+        <p style={{ color: mejor.color, fontWeight: "bold" }}>
+          Mejor : {mejor.value.toFixed(6)}
         </p>
       )}
       {promedio && (
@@ -39,9 +39,9 @@ const TooltipPersonalizado = ({ active, payload, label }) => {
           Promedio : {promedio.value.toFixed(6)}
         </p>
       )}
-      {mejor && (
-        <p style={{ color: mejor.color, fontWeight: "bold" }}>
-          Mejor : {mejor.value.toFixed(6)}
+      {peor && (
+        <p style={{ color: peor.color, fontWeight: "bold" }}>
+          Peor : {peor.value.toFixed(6)}
         </p>
       )}
     </div>
@@ -52,7 +52,7 @@ export function FitnessChart({ data }) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 flex flex-col w-full">
       <h3 className="font-bold text-slate-700 mb-4 uppercase tracking-wider text-sm">
-        Evolucion Fitness
+        Evolución Fitness
       </h3>
       <div className="w-full h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -71,22 +71,23 @@ export function FitnessChart({ data }) {
               domain={['auto', 'auto']}
               tickLine={false}
               axisLine={false}
+              /* NO HAY REVERSED, EL MAXIMIZADOR LO ACOMODA NATURALMENTE */
             />
             <Tooltip content={<TooltipPersonalizado />} />
             <Legend
               iconType="circle"
               wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
               payload={[
-                { value: "Peor",     type: "circle", color: "#dc2626" },
-                { value: "Promedio", type: "circle", color: "#2563eb" },
                 { value: "Mejor",    type: "circle", color: "#16a34a" },
+                { value: "Promedio", type: "circle", color: "#2563eb" },
+                { value: "Peor",     type: "circle", color: "#dc2626" },
               ]}
             />
             <Line
-              name="Peor"
+              name="Mejor"
               type="monotone"
-              dataKey="peor"
-              stroke="#dc2626"
+              dataKey="mejor"
+              stroke="#16a34a"
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 5 }}
@@ -101,10 +102,10 @@ export function FitnessChart({ data }) {
               activeDot={{ r: 5 }}
             />
             <Line
-              name="Mejor"
+              name="Peor"
               type="monotone"
-              dataKey="mejor"
-              stroke="#16a34a"
+              dataKey="peor"
+              stroke="#dc2626"
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 5 }}
